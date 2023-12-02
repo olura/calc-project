@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add price</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function savePrice() {
+            const savedPriceContainer = document.getElementById("saved-price")
+            const titleInput = document.getElementById("price-title-input")
+            const licPercentInput = document.getElementById("price-licPercent-input")
+            const workPercentInput = document.getElementById("price-workPercent-input")
+            const hourCostInput = document.getElementById("price-hourCost-input")
+            let  price = {
+                title: titleInput.value,
+                licPercent: licPercentInput.value,
+                workPercent: workPercentInput.value,
+                hourCost: hourCostInput.value
+            }
+            fetch("/api/price", {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(price)})
+            .then(rawResponse => rawResponse.json())
+            .then(json => savedPriceContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
+</head>
+<body>
+
+<h3>Создать новый прайс:</h3>
+<div class="row">
+    <label for="price-title-input">Название прайса:</label>
+    <input id="price-title-input" name="title" type="text"/>
+</div>
+<div class="row">
+    <label for="price-licPercent-input">Процент от стоимости лицензий (%):</label>
+    <input id="price-licPercent-input" name="licPercent" type="number" min="0"/>
+</div>
+<div class="row">
+    <label for="price-workPercent-input">Процент от стоимости проектных работ (%):</label>
+    <input id="price-workPercent-input" name="workPercent" type="number" min="0"/>
+</div>
+<div class="row">
+    <label for="price-hourCost-input">Ставка человеко-часа (руб.):</label>
+    <input id="price-hourCost-input" name="workPercent" type="number" min="0"/>
+</div>
+
+<div class="row">
+    <button type="button" onclick="savePrice()">Создать прайс</button>
+    <a href="price.html" th:href="@{/admin/price}"><button type="button">Назад</button></a>
+</div>
+<h3>Сохранённый прайс:</h3>
+<pre id = "saved-price"></pre>
+
+</body>
+</html>

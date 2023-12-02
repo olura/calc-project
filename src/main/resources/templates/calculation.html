@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8"/>
+  <title>List of all calculations</title>
+  <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .calculations {
+            border: 1px solid steelblue;
+            width: 1200px;
+            border-collapse: collapse;
+        }
+
+        .calculations tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .calculations td:last-child, td:first-child {
+            width: 50px;
+        }
+    </style>
+
+  <script>
+    // Fetch data from server
+    fetch('/api/calculation')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('tbody');
+            data.forEach(calculation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${calculation.id}</td>
+                    <td>${calculation.client}</td>
+                    <td>${calculation.price}</td>
+                    <td>${getFormattedDate(calculation.creationDate)}</td>
+                    <td>${calculation.licCost}</td>
+                    <td>${calculation.workCost}</td>
+                    <td>${calculation.hours}</td>
+                    <td>${calculation.resultCalculation}</td>
+                    <td><a href="#" onclick="deleteRow(${calculation.id})">Удалить</a></td>
+                    `
+                ;
+                tableBody.appendChild(row);
+            });
+        });
+
+    function getFormattedDate(inputData) {
+            let date = new Date(inputData);
+            let day = date.getDate().toString().padStart(2, '0'); // день месяца
+            let month = (date.getMonth() + 1).toString().padStart(2, '0'); // месяц (нумерация с 0)
+            let year = date.getFullYear().toString(); // год
+            let hours = date.getHours().toString().padStart(2, '0'); // часы
+            let minutes = date.getMinutes().toString().padStart(2, '0'); // минуты
+            let seconds = date.getSeconds().toString().padStart(2, '0'); // секунды
+            let dateTimeString = `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+      return dateTimeString;
+    }
+
+    // Delete row function
+    function deleteRow(id) {
+        fetch(`/api/calculation/${id}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    var table = document.querySelector('tbody');
+                    var rows = table.getElementsByTagName("tr");
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].getElementsByTagName("td");
+                        if (cells[0].innerHTML == id) {
+                          var rowIndex = rows[i].rowIndex;
+                          break;
+                      }
+                    }
+                    console.log("Num is: " + rowIndex);
+                    table.deleteRow(rowIndex - 1);
+                } else {
+                    throw new Error('Failed to delete row');
+                }
+            })
+            .catch(error => console.error(error));
+    }
+    function filterItems() {
+        document.querySelector('tbody').innerHTML = "";
+        const client = document.getElementById("calculation-filter-input").value;
+
+        fetch(`/api/client?title=${client}`, { method: 'GET' })
+              .then(response => response.json())
+              .then(data => {
+                  data.forEach(data => {
+                      if (data.id) {
+                        var id = data.id
+                        fetch(`/api/calculation?client=${id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.querySelector('tbody');
+                            data.forEach(calculation => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${calculation.id}</td>
+                                    <td>${calculation.client}</td>
+                                    <td>${calculation.price}</td>
+                                    <td>${getFormattedDate(calculation.creationDate)}</td>
+                                    <td>${calculation.licCost}</td>
+                                    <td>${calculation.workCost}</td>
+                                    <td>${calculation.hours}</td>
+                                    <td>${calculation.resultCalculation}</td>
+                                    <td><a href="#" onclick="deleteRow(${calculation.id})">Удалить</a></td>
+                                    `
+                                ;
+                                tableBody.appendChild(row);
+                            });
+                        });
+                      }
+                    });
+            })
+            .catch(error => console.error(error));
+    }
+
+    function clearFilterItems() {
+        document.querySelector('tbody').innerHTML = "";
+        fetch('/api/calculation')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('tbody');
+            data.forEach(calculation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${calculation.id}</td>
+                    <td>${calculation.client}</td>
+                    <td>${calculation.price}</td>
+                    <td>${getFormattedDate(calculation.creationDate)}</td>
+                    <td>${calculation.licCost}</td>
+                    <td>${calculation.workCost}</td>
+                    <td>${calculation.hours}</td>
+                    <td>${calculation.resultCalculation}</td>
+                    <td><a href="#" onclick="deleteRow(${calculation.id})">Удалить</a></td>
+                    `
+                ;
+                tableBody.appendChild(row);
+            });
+        });
+    }
+    </script>
+</head>
+<body>
+<h1>Мои расчёты:</h1>
+<div class="row">
+  <label for="calculation-filter-input">Фильтр по клиентам:</label>
+  <input id="calculation-filter-input" name="filter" type="search"/>
+  <button type="button" onclick="filterItems()">Фильтр</button>
+  <button type="button" onclick="clearFilterItems()">Сбросить фильтр</button>
+</div>
+<br/>
+<table class="calculations">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Клиент</th>
+    <th>Прайс</th>
+    <th>Дата создания</th>
+    <th>Стоимость лицензии</th>
+    <th>Стоимость проектных работ</th>
+    <th>Количество часов</th>
+    <th>Результат расчёта</th>
+    <th>Удалить</th>
+  </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<br>
+<div class="row">
+  <a href="addCalculation.html" th:href = "@{/addCalculation}"><button type="button">Добавить новый расчёт</button></a>
+  <a href="main.html" th:href="@{/}"><button type="button">На главную</button></a>
+</div>
+
+</body>
+</html>
