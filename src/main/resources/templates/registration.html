@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
+            background-image: url('https://bogatyr.club/uploads/posts/2023-03/1678997105_bogatyr-club-p-abstraktnii-svetlii-fon-foni-oboi-10.jpg');
             background-size: cover;
             background-color: #f4f4f4;
             text-align: center;
@@ -51,9 +51,15 @@
 <body>
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
     <h2>Регистрация нового пользователя</h2>
-    <input type="text" name="username" placeholder="Имя пользователя" required><br>
-    <input type="password" name="password" placeholder="Пароль" required><br>
-    <input type="text" name="email" placeholder="email" required><br>
+    <input type="text" name="username" th:field="*{username}" placeholder="Имя пользователя" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</div>
+    <br>
+    <input type="password" name="password" th:field="*{password}" placeholder="Пароль" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+    <br>
+    <input type="text" name="email" th:field="*{email}" placeholder="email" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+    <br>
     <div class="row">
         <input type="submit" value="Зарегистрироваться">
         <a type="text" href="main.html" th:href="@{/}">Отмена</a>

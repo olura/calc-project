@@ -1,22 +1,30 @@
 package ru.nau.calcProjects.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.nau.calcProjects.exception.UserExistException;
 import ru.nau.calcProjects.models.User;
 import ru.nau.calcProjects.services.UserServiceImpl;
+import ru.nau.calcProjects.util.UserValidator;
 
 @Controller
 public class PageController {
 
     private final UserServiceImpl userServiceImpl;
 
+    private final UserValidator userValidator;
+
     @Autowired
-    public PageController(UserServiceImpl userServiceImpl) {
+    public PageController(UserServiceImpl userServiceImpl, UserValidator userValidator) {
         this.userServiceImpl = userServiceImpl;
+        this.userValidator = userValidator;
     }
 
     @GetMapping("/")
@@ -41,12 +49,17 @@ public class PageController {
     }
 
     @GetMapping("/registration")
-    public String registrationPage() {
+    public String registrationPage(@ModelAttribute("user") User user) {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registrationPage(User user) throws Exception {
+    public String registrationPage(@ModelAttribute("user") @Valid User user,
+                                   BindingResult bindingResult) throws UserExistException {
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasErrors()){
+            return "registration";
+        }
         userServiceImpl.addUser(user);
         return "redirect:/login";
     }

@@ -5,10 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.nio.file.AccessDeniedException;
-import java.sql.SQLException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,7 +16,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
-    @ExceptionHandler({ClientExistException.class, UserExistException.class})
+    @ExceptionHandler(ClientExistException.class)
     public ResponseEntity<String> handleClientExistException(Exception ex) {
         String body = "{\"state\":\"fail\"," +
                 "\"message\":\"" + ex.getMessage() + "\"}";

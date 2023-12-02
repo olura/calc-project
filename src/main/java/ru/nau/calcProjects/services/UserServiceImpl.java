@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserDetailsService {
         return new CustomUserDetails(serviceUser);
     }
 
+    @Transactional(readOnly = true)
+    public Optional <User> findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     @Transactional
     public User addUser(User user) throws UserExistException {
         Optional<User> userFormDb = userRepository.findByUsername(user.getUsername());
