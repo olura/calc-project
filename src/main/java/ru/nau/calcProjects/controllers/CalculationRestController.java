@@ -22,8 +22,10 @@ public class CalculationRestController {
     }
 
     @GetMapping("/api/admin/calculation")
-    public List<CalculationDto> findAllByClientId(@RequestParam(value = "client", required = false) Long clientId) {
-        return calculationService.findAllByClientId(clientId)
+    public List<CalculationDto> findAllByClientId(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "client", required = false) Long clientId) {
+        return calculationService.findAllUserCalculationByUsernameAndClientId(username, clientId)
                 .stream()
                 .map(CalculationDto::new)
                 .collect(Collectors.toList());

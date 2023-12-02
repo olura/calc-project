@@ -26,7 +26,7 @@
 
   <script>
     // Fetch data from server
-    fetch('/api/admin/calculation')
+    fetch('/api/admin/calculation?client=&username=')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('tbody');
@@ -86,6 +86,7 @@
     function filterItems() {
         document.querySelector('tbody').innerHTML = "";
         const client = document.getElementById("calculation-filter-input").value;
+        const username = document.getElementById("user-filter-input").value;
 
         fetch(`/api/client?title=${client}`, { method: 'GET' })
               .then(response => response.json())
@@ -93,7 +94,7 @@
                   data.forEach(data => {
                       if (data.id) {
                         var id = data.id
-                        fetch(`/api/admin/calculation?client=${id}`)
+                        fetch(`/api/admin/calculation?client=${id}&username=${username}`)
                         .then(response => response.json())
                         .then(data => {
                             const tableBody = document.querySelector('tbody');
@@ -123,7 +124,7 @@
 
     function clearFilterItems() {
         document.querySelector('tbody').innerHTML = "";
-        fetch('/api/admin/calculation')
+        fetch('/api/admin/calculation?client=&username=')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('tbody');
@@ -151,9 +152,11 @@
 <body>
 <h1>Все расчёты:</h1>
 <div class="row">
-  <label for="calculation-filter-input">Фильтр по клиентам:</label>
+  <label for="user-filter-input">Имя пользователя:</label>
+  <input id="user-filter-input" name="filter" type="search"/>
+  <label for="calculation-filter-input">Клиент:</label>
   <input id="calculation-filter-input" name="filter" type="search"/>
-  <button type="button" onclick="filterItems()">Фильтр</button>
+  <button type="button" onclick="filterItems()">Применить фильтр</button>
   <button type="button" onclick="clearFilterItems()">Сбросить фильтр</button>
 </div>
 <br/>

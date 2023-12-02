@@ -19,6 +19,7 @@ import ru.nau.calcProjects.repositories.UserRepository;
 import ru.nau.calcProjects.security.CustomUserDetails;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CalculationServiceImpl implements CalculationService {
@@ -72,12 +73,40 @@ public class CalculationServiceImpl implements CalculationService {
     public List<Calculation> findAllUserCalculationByClientId(Long clientId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long authorId = customUserDetails.getUser().getId();
+        Long userId = customUserDetails.getUser().getId();
         if (clientId != null) {
             return calculationRepository
-                .findTop100ByAuthorIdAndClientId(authorId, clientId, Sort.by(Sort.Order.desc("creationDate")));
+                .findTop100ByAuthorIdAndClientId(userId, clientId, Sort.by(Sort.Order.desc("creationDate")));
         } else {
-            return calculationRepository.findTop100ByAuthorId(authorId, Sort.by(Sort.Order.desc("creationDate")));
+            return calculationRepository.findTop100ByAuthorId(userId, Sort.by(Sort.Order.desc("creationDate")));
+        }
+    }
+
+    @Override
+    public List<Calculation> findAllUserCalculationByUsernameAndClientId(String username, Long clientId) {
+        Long userId;
+
+        if (!username.isEmpty()) {
+            Optional<User> user = userRepository.findFirstByUsernameContaining(username);
+            if (user.isPresent()) {
+                userId = user.get().getId();
+            } else {
+                return List.of();
+            }
+            if (clientId != null) {
+                return calculationRepository
+                        .findTop100ByAuthorIdAndClientId(userId, clientId, Sort.by(Sort.Order.desc("creationDate")));
+            } else {
+                return calculationRepository.findTop100ByAuthorId(userId, Sort.by(Sort.Order.desc("creationDate")));
+            }
+
+        } else {
+            if (clientId != null) {
+                return calculationRepository
+                        .findTop100ByClientId(clientId, Sort.by(Sort.Order.desc("creationDate")));
+            } else {
+                return calculationRepository.findTop100ByOrderByCreationDateDesc();
+            }
         }
     }
 

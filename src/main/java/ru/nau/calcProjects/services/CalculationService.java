@@ -10,8 +10,9 @@ public interface CalculationService {
     Calculation createCalculation(CalculationDto calculation);
 
     List<Calculation> findAllByClientId(Long clientId);
-
     List<Calculation> findAllUserCalculationByClientId(Long clientId);
+
+    List<Calculation> findAllUserCalculationByUsernameAndClientId(String username, Long clientId);
 
     Calculation findById(Long id) throws CalculationNotFoundException;
 
