@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserDetailsService {
     public List<User> findAllUser () {
         return userRepository.findAll();
     }
+    @Transactional(readOnly = true)
+    public User findUser(Long id) throws UserNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь под номером " + id + " не найден"));
+    }
 
     @Transactional
     public User editUser(User user, Long id) throws UserNotFoundException {

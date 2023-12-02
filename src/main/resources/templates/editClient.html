@@ -21,30 +21,6 @@
             margin-top: 10px;
         }
     </style>
-    <script>
-        const path = window.location.pathname;
-        const pathArray = path.split('/');
-        const id = pathArray[pathArray.length - 1];
-        console.log(`id: ${id}`);
-        function saveClient() {
-            const savedClientContainer = document.getElementById("saved-client")
-            const titleInput = document.getElementById("client-title-input")
-            const commentInput = document.getElementById("client-comment-input")
-            let  client = {
-                title: titleInput.value,
-                comment: commentInput.value,
-            }
-            fetch(`/api/client/${id}`, {
-                method: 'PUT',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(client)})
-            .then(rawResponse => rawResponse.json())
-            .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
-        }
-    </script>
 </head>
 <body>
 
@@ -65,5 +41,37 @@
 <h3>Сохранённый клиент:</h3>
 <pre id = "saved-client"></pre>
 
+<script>
+        const path = window.location.pathname;
+        const pathArray = path.split('/');
+        const id = pathArray[pathArray.length - 1];
+        console.log(`id: ${id}`);
+
+        fetch(`/api/client/${id}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById("client-title-input").value = data.title;
+              document.getElementById("client-comment-input").value = data.comment;
+            });
+
+        function saveClient() {
+            const savedClientContainer = document.getElementById("saved-client")
+            const titleInput = document.getElementById("client-title-input")
+            const commentInput = document.getElementById("client-comment-input")
+            let  client = {
+                title: titleInput.value,
+                comment: commentInput.value,
+            }
+            fetch(`/api/client/${id}`, {
+                method: 'PUT',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(client)})
+            .then(rawResponse => rawResponse.json())
+            .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
 </body>
 </html>

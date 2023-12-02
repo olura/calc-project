@@ -32,6 +32,11 @@ public class UserRestController {
                 .map(UserDto::new)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/api/user/{id}")
+    public UserDto getUser(@PathVariable("id") @Positive long id) throws UserNotFoundException {
+        return new UserDto(userServiceImpl.findUser(id));
+    }
     
     @PostMapping("/api/user")
     public UserDto createUser(@Valid @RequestBody User user) throws UserExistException {

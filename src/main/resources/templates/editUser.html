@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Edit user</title>
+    <title>Редактирование объекта</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -21,11 +21,39 @@
             margin-top: 10px;
         }
     </style>
+</head>
+
+<body>
+<h2>Редактирование объекта</h2>
+
+<h3>Изменить:</h3>
+<div class="row">
+    <label for="user-password-input">Введите новый пароль:</label>
+    <input id="user-password-input" name="title" type="password"/>
+</div>
+<div class="row">
+    <label for="user-email-input">Введите новый email:</label>
+    <input id="user-email-input" name="title" type="text" value=""/>
+</div>
+<div class="row">
+    <button type="button" onclick="saveUser()">Сохранить изменения</button>
+    <a href="main.html" th:href="@{/admin/user}"><button type="button">Назад</button></a>
+</div>
+<h3>Сохранённый пользователь:</h3>
+<pre id = "saved-user"></pre>
     <script>
+
         const path = window.location.pathname;
         const pathArray = path.split('/');
         const id = pathArray[pathArray.length - 1];
         console.log(`id: ${id}`);
+
+        fetch(`/api/user/${id}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById("user-email-input").value = data.email;
+            });
+
         function saveUser() {
             const savedUserContainer = document.getElementById("saved-user")
             const passwordInput = document.getElementById("user-password-input")
@@ -45,24 +73,5 @@
             .then(json => savedUserContainer.innerHTML = JSON.stringify(json, null, 4))
         }
     </script>
-</head>
-<body>
-
-<h3>Изменить:</h3>
-<div class="row">
-    <label for="user-password-input">Введите новый пароль:</label>
-    <input id="user-password-input" name="title" type="password"/>
-</div>
-<div class="row">
-    <label for="user-email-input">Введите новый email:</label>
-    <input id="user-email-input" name="title" type="email"/>
-</div>
-<div class="row">
-    <button type="button" onclick="saveUser()">Создать пользователя</button>
-    <a href="main.html" th:href="@{/admin/user}"><button type="button">Назад</button></a>
-</div>
-<h3>Сохранённый пользователь:</h3>
-<pre id = "saved-user"></pre>
-
 </body>
 </html>

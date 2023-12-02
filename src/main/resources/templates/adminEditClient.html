@@ -21,44 +21,6 @@
             margin-top: 10px;
         }
     </style>
-    <script>
-        const path = window.location.pathname;
-        const pathArray = path.split('/');
-        const id = pathArray[pathArray.length - 1];
-        console.log(`id: ${id}`);
-        function saveClient() {
-            const savedClientContainer = document.getElementById("saved-client")
-            const ownerInput = document.getElementById("client-owner-input")
-            const titleInput = document.getElementById("client-title-input")
-            const commentInput = document.getElementById("client-comment-input")
-            let  client = {
-                owner: ownerInput.value,
-                title: titleInput.value,
-                comment: commentInput.value,
-            }
-            fetch(`/api/admin/client/${id}`, {
-                method: 'PUT',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(client)})
-            .then(rawResponse => rawResponse.json())
-            .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
-        }
-        // Fetch user from server
-        fetch('/api/user')
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById('client-owner-input');
-                data.forEach(user => {
-                    const option = document.createElement('option');
-                    option.text = user.username;
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => console.error(error));
-    </script>
 </head>
 <body>
 
@@ -85,5 +47,52 @@
 <h3>Сохранённый клиент:</h3>
 <pre id = "saved-client"></pre>
 
+<script>
+    const path = window.location.pathname;
+    const pathArray = path.split('/');
+    const id = pathArray[pathArray.length - 1];
+    console.log(`id: ${id}`);
+
+    fetch(`/api/client/${id}`, { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("client-owner-input").value = data.owner;
+          document.getElementById("client-title-input").value = data.title;
+          document.getElementById("client-comment-input").value = data.comment;
+        });
+
+    function saveClient() {
+        const savedClientContainer = document.getElementById("saved-client")
+        const ownerInput = document.getElementById("client-owner-input")
+        const titleInput = document.getElementById("client-title-input")
+        const commentInput = document.getElementById("client-comment-input")
+        let  client = {
+            owner: ownerInput.value,
+            title: titleInput.value,
+            comment: commentInput.value,
+        }
+        fetch(`/api/admin/client/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(client)})
+        .then(rawResponse => rawResponse.json())
+        .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
+    }
+    // Fetch user from server
+    fetch('/api/user')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('client-owner-input');
+            data.forEach(user => {
+                const option = document.createElement('option');
+                option.text = user.username;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error(error));
+</script>
 </body>
 </html>
