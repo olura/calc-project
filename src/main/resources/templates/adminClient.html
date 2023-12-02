@@ -40,7 +40,7 @@
 
   <script>
     // Fetch data from server
-    fetch('/api/client')
+    fetch('/api/admin/client')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('tbody');
@@ -48,10 +48,11 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${client.id}</td>
+                    <td>${client.owner}</td>
                     <td>${client.title}</td>
                     <td>${client.comment}</td>
                     <td>${getFormattedDate(client.creationDate)}</td>
-                    <td><a href="/client/${client.id}">Изменить</a></td>
+                    <td><a href="/admin/client/${client.id}">Изменить</a></td>
                     <td><a href="#" onclick="deleteRow(${client.id})">Удалить</a></td>
                     `
                 ;
@@ -111,12 +112,13 @@
     </script>
 </head>
 <body>
-<h1>Мои клиенты:</h1>
+<h1>Все клиенты:</h1>
 
 <table class="clients">
   <thead>
   <tr>
     <th>ID</th>
+    <th>Владелец</th>
     <th>Название клиента</th>
     <th>Примечание</th>
     <th>Дата создания</th>
@@ -130,7 +132,7 @@
 <br>
 <div class="row">
   <a href = "addClient.html" th:href = "@{/addClient}"><button type="button">Добавить нового клиента</button></a>
-  <a href="main.html" th:href="@{/}"><button type="button">На главную</button></a>
+  <a href="admin.html" th:href="@{/admin}"><button type="button">Назад</button></a>
 </div>
 
 </body>

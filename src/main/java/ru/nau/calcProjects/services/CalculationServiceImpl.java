@@ -41,11 +41,7 @@ public class CalculationServiceImpl implements CalculationService {
     @Transactional
     @Override
     public Calculation createCalculation(CalculationDto calculationDto) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String username = customUserDetails.getUser().getUsername();
-
+        String username = getUser().getUsername();
         User user = userRepository.findByUsername(username).get();
         Client client = clientRepository.findByTitle(calculationDto.getClient()).get();
         Price actualPrice = priceRepository.findByStatus(true);
@@ -71,9 +67,7 @@ public class CalculationServiceImpl implements CalculationService {
 
     @Override
     public List<Calculation> findAllUserCalculationByClientId(Long clientId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = customUserDetails.getUser().getId();
+        Long userId = getUser().getId();
         if (clientId != null) {
             return calculationRepository
                 .findTop100ByAuthorIdAndClientId(userId, clientId, Sort.by(Sort.Order.desc("creationDate")));
@@ -121,5 +115,11 @@ public class CalculationServiceImpl implements CalculationService {
     @Override
     public void deleteById(Long id) throws CalculationNotFoundException {
         calculationRepository.deleteById(id);
+    }
+
+    private User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        return customUserDetails.getUser();
     }
 }

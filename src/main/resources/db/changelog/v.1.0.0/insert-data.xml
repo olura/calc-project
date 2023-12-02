@@ -27,11 +27,13 @@
         <insert tableName="clients">
             <column name="title" value="АО 'Ромашка'"/>
             <column name="comment" value="Тестовый юрик"/>
+            <column name="user_id" value="1"/>
             <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
         </insert>
         <insert tableName="clients">
             <column name="title" value="Иванов Иван"/>
             <column name="comment" value="Тестовый физикик"/>
+            <column name="user_id" value="2"/>
             <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
         </insert>
         <insert tableName="calculations">

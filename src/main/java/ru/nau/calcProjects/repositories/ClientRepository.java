@@ -11,5 +11,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findByTitle(String title);
     List<Client> findByTitleContaining(String title, Sort sort);
+    List<Client> findByOwnerIdAndTitleContaining(Long userId, String title, Sort sort);
+    List<Client> findByOwnerId(Long ownerId, Sort sort);
     Optional<Client> findFirstByTitleContaining(String title);
 }

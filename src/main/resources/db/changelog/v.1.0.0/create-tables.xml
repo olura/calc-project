@@ -4,17 +4,6 @@
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create-tables" author="you">
-        <createTable tableName="clients">
-            <column name="id" type="bigserial" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creation_date" type="timestamp(6)"/>
-            <column name="title" type="varchar(255)">
-                <constraints unique="true"/>
-            </column>
-            <column name="comment" type="varchar(255)"/>
-        </createTable>
-
         <createTable tableName="service_users">
             <column name="id" type="bigserial" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -26,6 +15,22 @@
             <column name="email" type="varchar(255)"/>
             <column name="role" type="varchar(255)">
                 <constraints checkConstraint="role in ('USER','ADMIN')"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="clients">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creation_date" type="timestamp(6)"/>
+            <column name="title" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="comment" type="varchar(255)"/>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="clients_user_id_id_fk"
+                             referencedTableName="service_users"
+                             referencedColumnNames="id"/>
             </column>
         </createTable>
 

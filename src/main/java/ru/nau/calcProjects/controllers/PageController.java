@@ -83,10 +83,21 @@ public class PageController {
         return "client";
     }
 
+    @GetMapping("/admin/client")
+    public String adminClientPage() {
+        return "adminClient";
+    }
+
     @GetMapping ("/client/{id}")
     public String editPage(Model model, @PathVariable("id") long clientId) {
         model.addAttribute("id", clientId);
         return "editClient";
+    }
+
+    @GetMapping ("/admin/client/{id}")
+    public String editAdminClientPage(Model model, @PathVariable("id") long clientId) {
+        model.addAttribute("id", clientId);
+        return "adminEditClient";
     }
 
     @GetMapping("/addClient")
