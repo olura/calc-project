@@ -1,0 +1,80 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-tables" author="you">
+        <createTable tableName="clients">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creation_date" type="timestamp(6)"/>
+            <column name="title" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="comment" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="service_users">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="role" type="varchar(255)">
+                <constraints checkConstraint="role in ('USER','ADMIN')"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="prices">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/></column>
+            <column name="creation_date" type="timestamp(6)"/>
+            <column name="lic_percent" type="float(53)">
+                <constraints nullable="false"/></column>
+            <column name="work_percent" type="float(53)">
+                <constraints nullable="false"/></column>
+            <column name="hour_cost" type="float(53)">
+                <constraints nullable="false"/></column>
+            <column name="status" type="boolean">
+                <constraints nullable="false"/></column>
+        </createTable>
+
+        <createTable tableName="calculations">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="calculations_user_id_fk"
+                             referencedTableName="service_users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="client_id" type="bigint">
+                <constraints foreignKeyName="calculations_client_id_fk"
+                             referencedTableName="clients"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="price_id" type="bigint">
+                <constraints foreignKeyName="calculations_price_id_fk"
+                             referencedTableName="prices"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="creation_date" type="timestamp(6)"/>
+            <column name="lic_cost" type="float(53)">
+                <constraints nullable="false"/></column>
+            <column name="work_cost" type="float(53)">
+                <constraints nullable="false"/></column>
+            <column name="hours" type="integer">
+                <constraints nullable="false"/></column>
+            <column name="result_calculation" type="float(53)">
+                <constraints nullable="false"/></column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
