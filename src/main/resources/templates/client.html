@@ -90,7 +90,7 @@
                     table.deleteRow(rowIndex - 1);
                 } else {
                     response.json().then(function(data) {
-                    var errorMessage = data.message;
+                    var errorMessage = data.violations[0].message;
                     showError(errorMessage);
                     });
                 }

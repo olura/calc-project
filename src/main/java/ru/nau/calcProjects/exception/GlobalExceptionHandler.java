@@ -1,46 +1,70 @@
 package ru.nau.calcProjects.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ResponseBody
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse onConstraintValidationException(ConstraintViolationException e) {
+        final List<Violation> violations = e.getConstraintViolations().stream()
+                .map(violation -> new Violation(violation.getPropertyPath().toString(), violation.getMessage()))
+                .collect(Collectors.toList());
+        return new ValidationErrorResponse(violations);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ValidationErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        final List<Violation> violations = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.toList());
+        return new ValidationErrorResponse(violations);
+    }
+
     @ExceptionHandler(PriceNotFoundException.class)
-    public ResponseEntity<String> handlePriceNotFoundException(PriceNotFoundException ex) {
-        String body = "{\"state\":\"fail\"," +
-                "\"message\":\"" + ex.getMessage() + "\"}";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ValidationErrorResponse handlePriceNotFoundException(PriceNotFoundException ex) {
+        Violation violation = new Violation("id", ex.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
     }
 
     @ExceptionHandler(ClientExistException.class)
-    public ResponseEntity<String> handleClientExistException(Exception ex) {
-        String body = "{\"state\":\"fail\"," +
-                "\"message\":\"" + ex.getMessage() + "\"}";
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
-    }
-
-    @ExceptionHandler(ValidateException.class)
-    public ResponseEntity<String> handleRuntimeException(ValidateException ex) {
-        String body = "{\"state\":\"fail\"," +
-                "\"message\":\"" + ex.getMessage() + "\"}";
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ValidationErrorResponse handleClientExistException(Exception ex) {
+        Violation violation = new Violation("id", ex.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleRuntimeException(DataIntegrityViolationException ex) {
-        String body = "{\"state\":\"fail\"," +
-                "\"message\":\"Удалите невозможно, сначала необходимо удалить связаные с объектом сущности\"}";
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ValidationErrorResponse handleRuntimeException(DataIntegrityViolationException ex) {
+        String text = "Удалите невозможно, сначала необходимо удалить связаные с объектом сущности";
+        Violation violation = new Violation("id", text);
+        return new ValidationErrorResponse(List.of(violation));
     }
 
     @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException ex) {
-        String body = "{\"state\":\"fail\"," +
-                "\"message\":\"" + ex.getMessage() + "\"}";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ValidationErrorResponse handleClientNotFoundException(ClientNotFoundException ex) {
+        Violation violation = new Violation("id", ex.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
     }
 }

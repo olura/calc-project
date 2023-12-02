@@ -17,11 +17,10 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 3, max = 25, message = "Имя должно содержать от 3 до 30 символов")
+    @Size(min = 3, max = 25, message = "Имя должно содержать от 3 до 25 символов")
     private String username;
 
     @NotBlank(message = "Пароль не может быть пустым")
-
     private String password;
 
     @NotBlank(message = "Email не может быть пустым")

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8"/>
     <title>List of all users</title>
+    <div class="error-message"></div>
+
     <style type="text/css">
         body {
             padding: 50px;
@@ -21,6 +23,19 @@
 
         .users td:last-child, td:first-child {
             width: 50px;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+            display: none;
         }
     </style>
 
@@ -61,10 +76,24 @@
                     console.log("Num is: " + rowIndex);
                     table.deleteRow(rowIndex - 1);
                 } else {
-                    throw new Error('Failed to delete row');
+                    response.json().then(function(data) {
+                    var errorMessage = data.violations[0].message;
+                    showError(errorMessage);
+                    });
                 }
             })
             .catch(error => console.error(error));
+    }
+    function showError(message) {
+      const errorMessage = document.querySelector('.error-message');
+      errorMessage.innerText = message;
+      errorMessage.style.display = 'block';
+      setTimeout(hideError, 5000);
+    }
+
+    function hideError() {
+      const errorMessage = document.querySelector('.error-message');
+      errorMessage.style.display = 'none';
     }
     </script>
 </head>

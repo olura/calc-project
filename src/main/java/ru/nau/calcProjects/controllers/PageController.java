@@ -38,9 +38,20 @@ public class PageController {
     }
 
     @GetMapping("/admin/addUser")
-    public String addUserPage() {
+    public String addUserPage(@ModelAttribute("user") User user) {
         return "addUser";
     }
+
+//    @PostMapping("/admin/addUser")
+//    public String addUserPage(@ModelAttribute("user") @Valid User user,
+//                              BindingResult bindingResult) throws UserExistException {
+//        userValidator.validate(user, bindingResult);
+//        if (bindingResult.hasErrors()){
+//            return "addUser";
+//        }
+//        userServiceImpl.addUser(user);
+//        return "redirect:/admin/user";
+//    }
 
     @GetMapping ("/admin/user/{id}")
     public String editUser(Model model, @PathVariable("id") long userId) {

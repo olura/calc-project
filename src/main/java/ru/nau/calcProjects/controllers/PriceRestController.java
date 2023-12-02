@@ -1,14 +1,17 @@
 package ru.nau.calcProjects.controllers;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nau.calcProjects.exception.PriceNotFoundException;
-import ru.nau.calcProjects.exception.ValidateException;
 import ru.nau.calcProjects.models.Price;
 import ru.nau.calcProjects.services.PriceService;
 
 import java.util.List;
 
+@Validated
 @RestController
 public class PriceRestController {
 
@@ -25,34 +28,22 @@ public class PriceRestController {
     }
 
     @GetMapping ("/api/price/{id}")
-    public Price getPrice(@PathVariable long id) throws PriceNotFoundException {
+    public Price getPrice(@PathVariable @Positive long id) throws PriceNotFoundException {
         return priceService.findById(id);
     }
 
     @PostMapping("/api/price")
-    public Price createPrice(@RequestBody Price price) throws ValidateException {
-        if (price.getTitle().isEmpty()) {
-            throw new ValidateException("Название прайса не может быть пустым. Необходимо заполнить.");
-        } else if (price.getLicPercent() == null) {
-            throw new ValidateException("Процент от стоимости лицензий не может быть пустым. Необходимо заполнить.");
-        } else if (price.getWorkPercent() == null) {
-            throw new ValidateException("Процент от стоимости проектных работ не может быть пустым. Необходимо заполнить.");
-        } else if (price.getHourCost() == null) {
-            throw new ValidateException("Ставка человеко-часа не может быть пустой. Необходимо заполнить.");
-        }
+    public Price createPrice(@Valid @RequestBody Price price) {
         return priceService.createPrice(price);
     }
 
     @PutMapping("/api/price/{id}")
-    public Price editPrice(@PathVariable("id") long id, @RequestBody Price price) throws PriceNotFoundException, ValidateException {
-        if (price.getTitle().isEmpty()) {
-            throw new ValidateException("Название прайса не может быть пустым. Необходимо заполнить.");
-        }
+    public Price editPrice(@PathVariable("id") @Positive long id, @Valid @RequestBody Price price) throws PriceNotFoundException {
         return priceService.editPrice(price, id);
     }
 
     @DeleteMapping("/api/price/{id}")
-    public String deleteBook(@PathVariable("id") long id) throws PriceNotFoundException {
+    public String deleteBook(@PathVariable("id") @Positive long id) throws PriceNotFoundException {
         priceService.deleteById(id);
         return "{\"state\":\"success\"}";
     }

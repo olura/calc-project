@@ -91,7 +91,7 @@
                     table.deleteRow(rowIndex - 1);
                 } else {
                     response.json().then(function(data) {
-                    var errorMessage = data.message;
+                    var errorMessage = data.violations[0].message;
                     showError(errorMessage);
                     });
                 }
@@ -131,7 +131,6 @@
 </table>
 <br>
 <div class="row">
-  <a href = "addClient.html" th:href = "@{/addClient}"><button type="button">Добавить нового клиента</button></a>
   <a href="admin.html" th:href="@{/admin}"><button type="button">Назад</button></a>
 </div>
 

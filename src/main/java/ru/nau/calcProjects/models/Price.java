@@ -1,6 +1,9 @@
 package ru.nau.calcProjects.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,14 +21,21 @@ public class Price {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min = 3, max = 25, message = "Название должно содержать от 3 до 25 символов")
     private String title;
 
     private ZonedDateTime creationDate;
 
+    @NotNull
+    @Positive(message = "Процент от стоимости лицензий должен быть больше 0")
     private Double licPercent;
 
+    @NotNull
+    @Positive(message = "Процент от стоимости проектных работ проектных работ должен быть больше 0")
     private Double workPercent;
 
+    @NotNull
+    @Positive(message = "Ставка человеко-часа должна быть больше 0")
     private Double hourCost;
 
     private boolean status = false;

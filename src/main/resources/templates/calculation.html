@@ -86,7 +86,7 @@
         document.querySelector('tbody').innerHTML = "";
         const client = document.getElementById("calculation-filter-input").value;
 
-        fetch(`/api/client?title=${client}`, { method: 'GET' })
+        fetch(`/api/admin/client?title=${client}`, { method: 'GET' })
               .then(response => response.json())
               .then(data => {
                   data.forEach(data => {

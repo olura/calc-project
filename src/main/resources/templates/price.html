@@ -24,6 +24,7 @@
         .prices td:last-child, td:first-child {
             width: 50px;
         }
+
         .error-message {
             position: fixed;
             top: 0;
@@ -92,7 +93,7 @@
                     window.location.reload();
                 } else {
                     response.json().then(function(data) {
-                    var errorMessage = data.message;
+                    var errorMessage = data.violations[0].message;
                     showError(errorMessage);
                     });
                 }
