@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Main page</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h2>Добро пожаловать в сервис онлайн расчёта стоимости техподдержки</h2>
+<br>
+<p><a href="admin.html" th:href="@{/admin}">Админ панель</a></p>
+<p><a href="addCalculation.html" th:href="@{/addCalculation}">Создать новый расчёт</a></p>
+<p><a href="calculation.html" th:href="@{/calculation}">Мои расчёты</a></p>
+<p><a href="price.html" th:href="@{/client}">Мои клиенты</a></p>
+<p><a th:href="@{/logout}">Выход</a></p>
+</body>
+</html>

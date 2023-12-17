@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация нового пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://bogatyr.club/uploads/posts/2023-03/1678997105_bogatyr-club-p-abstraktnii-svetlii-fon-foni-oboi-10.jpg');
+            background-size: cover;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        form {
+            margin: 50px auto;
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<form th:method="POST" th:action="@{/registration}" th:object="${user}">
+    <h2>Регистрация нового пользователя</h2>
+    <input type="text" name="username" th:field="*{username}" placeholder="Имя пользователя" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</div>
+    <br>
+    <input type="password" name="password" th:field="*{password}" placeholder="Пароль" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+    <br>
+    <input type="text" name="email" th:field="*{email}" placeholder="email" required>
+    <div style="color:red; font-size:13px" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+    <br>
+    <div class="row">
+        <input type="submit" value="Зарегистрироваться">
+        <a type="text" href="main.html" th:href="@{/}">Отмена</a>
+    </div>
+</form>
+</body>
+</html>

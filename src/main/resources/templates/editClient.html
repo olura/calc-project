@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit client</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h3>Изменить клиента:</h3>
+<div class="row">
+    <label for="client-title-input">Название клиента:</label>
+    <input id="client-title-input" name="title" type="text"/>
+</div>
+<div class="row">
+    <label for="client-comment-input">Примечание:</label>
+    <input id="client-comment-input" name="comment" type="text"/>
+</div>
+
+<div class="row">
+    <button type="button" onclick="saveClient()">Сохранить изменения</button>
+    <a href="main.html" th:href="@{/client}"><button type="button">Назад</button></a>
+</div>
+<h3>Сохранённый клиент:</h3>
+<pre id = "saved-client"></pre>
+
+<script>
+        const path = window.location.pathname;
+        const pathArray = path.split('/');
+        const id = pathArray[pathArray.length - 1];
+        console.log(`id: ${id}`);
+
+        fetch(`/api/client/${id}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById("client-title-input").value = data.title;
+              document.getElementById("client-comment-input").value = data.comment;
+            });
+
+        function saveClient() {
+            const savedClientContainer = document.getElementById("saved-client")
+            const titleInput = document.getElementById("client-title-input")
+            const commentInput = document.getElementById("client-comment-input")
+            let  client = {
+                title: titleInput.value,
+                comment: commentInput.value,
+            }
+            fetch(`/api/client/${id}`, {
+                method: 'PUT',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(client)})
+            .then(rawResponse => rawResponse.json())
+            .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
+</body>
+</html>

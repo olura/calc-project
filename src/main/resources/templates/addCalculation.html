@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add calculation</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function saveCalculation() {
+            const savedCalculationContainer = document.getElementById("saved-calculation")
+            const licCostInput = document.getElementById("calculation-licCost-input")
+            const workCostInput = document.getElementById("calculation-workCost-input")
+            const hoursInput = document.getElementById("calculation-hours-input")
+            const clientInput = document.getElementById("calculation-client-input")
+            let  calculation = {
+                licCost: licCostInput.value,
+                workCost: workCostInput.value,
+                hours: hoursInput.value,
+                client: clientInput.value
+            }
+            fetch("/api/calculation", {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(calculation)})
+            .then(rawResponse => rawResponse.json())
+            .then(json => savedCalculationContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+        // Fetch author from server
+        fetch('/api/client')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('calculation-client-input');
+                data.forEach(client => {
+                    const option = document.createElement('option');
+                    option.text = client.title;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</head>
+<body>
+
+<h3>Создать новый расчёт:</h3>
+<div class="row">
+    <label for="calculation-client-input">Клиент:</label>
+    <select id="calculation-client-input" name="client" type="text">
+        <option value="">--Выберите клиента--</option>
+    </select>
+    <a href="addClient.html" th:href="@{/addClient}"><button type="button">Создать клиента</button></a>
+</div>
+<div class="row">
+    <label for="calculation-licCost-input">Стоимость лицензии:</label>
+    <input id="calculation-licCost-input" name="licCost" type="number" min="0"/>
+</div>
+<div class="row">
+    <label for="calculation-workCost-input">Стоимость проектных работ:</label>
+    <input id="calculation-workCost-input" name="workCost" type="number" min="0"/>
+</div>
+<div class="row">
+    <label for="calculation-hours-input">Количество часов:</label>
+    <input id="calculation-hours-input" name="hours" type="number" min="0">
+</div>
+
+<div class="row">
+    <button type="button" onclick="saveCalculation()">Создать расчёт</button>
+    <a href="calculation.html" th:href="@{/calculation}"><button type="button">Назад</button></a>
+</div>
+<div class="row">
+    <a href="main.html" th:href="@{/}"><button type="button">На главную</button></a>
+</div>
+<h3>Расчёт:</h3>
+<pre id = "saved-calculation"></pre>
+
+</body>
+</html>

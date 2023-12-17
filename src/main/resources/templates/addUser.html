@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add user</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function saveUser() {
+            const savedUserContainer = document.getElementById("saved-user")
+            const usernameInput = document.getElementById("user-username-input")
+            const passwordInput = document.getElementById("user-password-input")
+            const emailInput = document.getElementById("user-email-input")
+            let  user = {
+                username: usernameInput.value,
+                password: passwordInput.value,
+                email: emailInput.value,
+            }
+            fetch("/api/user", {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)})
+            .then(rawResponse => rawResponse.json())
+            .then(json => savedUserContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
+</head>
+<body>
+
+<h3>Создать нового пользователя:</h3>
+<div class="row">
+    <label for="user-username-input">Имя пользователя:</label>
+    <input id="user-username-input" name="username" type="text"/>
+</div>
+<div class="row">
+    <label for="user-password-input">Пароль:</label>
+    <input id="user-password-input" name="title" type="password"/>
+</div>
+<div class="row">
+    <label for="user-email-input">Email:</label>
+    <input id="user-email-input" name="title" type="email"/>
+</div>
+<div class="row">
+    <button type="button" onclick="saveUser()">Создать пользователя</button>
+    <a href="main.html" th:href="@{/admin/user}"><button type="button">Назад</button></a>
+</div>
+<h3>Сохранённый пользователь:</h3>
+<pre id = "saved-user"></pre>
+
+</body>
+</html>

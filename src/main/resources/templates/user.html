@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all users</title>
+    <div class="error-message"></div>
+
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .users {
+            border: 1px solid steelblue;
+            width: 700px;
+            border-collapse: collapse;
+        }
+
+        .users tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .users td:last-child, td:first-child {
+            width: 50px;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+            display: none;
+        }
+    </style>
+
+    <script>
+    // Fetch data from server
+    fetch('/api/user')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('tbody');
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td><a href="/admin/user/${user.id}">Изменить</a></td>
+                    <td><a href="#" onclick="deleteRow(${user.id})">Удалить</a></td>
+                    `
+                ;
+                tableBody.appendChild(row);
+            });
+        });
+    // Delete row function
+    function deleteRow(id) {
+        fetch(`/api/user/${id}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    var table = document.querySelector('tbody');
+                    var rows = table.getElementsByTagName("tr");
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].getElementsByTagName("td");
+                        if (cells[0].innerHTML == id) {
+                          var rowIndex = rows[i].rowIndex;
+                          break;
+                      }
+                    }
+                    console.log("Num is: " + rowIndex);
+                    table.deleteRow(rowIndex - 1);
+                } else {
+                    response.json().then(function(data) {
+                    var errorMessage = data.violations[0].message;
+                    showError(errorMessage);
+                    });
+                }
+            })
+            .catch(error => console.error(error));
+    }
+    function showError(message) {
+      const errorMessage = document.querySelector('.error-message');
+      errorMessage.innerText = message;
+      errorMessage.style.display = 'block';
+      setTimeout(hideError, 5000);
+    }
+
+    function hideError() {
+      const errorMessage = document.querySelector('.error-message');
+      errorMessage.style.display = 'none';
+    }
+    </script>
+</head>
+<body>
+<h1>Пользователи:</h1>
+
+<table class="users">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Логин</th>
+        <th>Email</th>
+        <th>Роль</th>
+        <th>Изменить</th>
+        <th>Удалить</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<br>
+<div class="row">
+    <a href="addPrice.html" th:href = "@{/admin/addUser}"><button type="button">Добавить нового пользователя</button></a>
+    <a href="admin.html" th:href="@{/admin}"><button type="button">Назад</button></a>
+</div>
+
+</body>
+</html>

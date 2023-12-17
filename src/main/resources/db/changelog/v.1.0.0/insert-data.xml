@@ -1,0 +1,71 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-data" author="you">
+        <insert tableName="service_users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$7OpFR2kzKhxvwe37Pi2KL.maJP8wfv8PO/.7sn56Cs8dvvkRwzFgW"/>
+            <column name="email" value="admin@email.ru"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+        <insert tableName="service_users">
+            <column name="username" value="user"/>
+            <column name="password" value="$2a$10$2Pb36deyHJDMmdCRwzL9C.gbKo2s68SNER7JYttg5JgQ9VzjHQkOO"/>
+            <column name="email" value="user@email.ru"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="prices">
+            <column name="title" value="Тестовый прайс"/>
+            <column name="lic_percent" valueNumeric="50"/>
+            <column name="work_percent" valueNumeric="100"/>
+            <column name="hour_cost" valueNumeric="500"/>
+            <column name="status" valueBoolean="true"/>
+            <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="title" value="АО 'Ромашка'"/>
+            <column name="comment" value="Тестовый юрик"/>
+            <column name="user_id" value="1"/>
+            <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="title" value="Иванов Иван"/>
+            <column name="comment" value="Тестовый физикик"/>
+            <column name="user_id" value="2"/>
+            <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
+        </insert>
+        <insert tableName="calculations">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="price_id" valueNumeric="1"/>
+            <column name="creation_date" valueDate="2023-11-22 21:28:12"/>
+            <column name="lic_cost" valueNumeric="10"/>
+            <column name="work_cost" valueNumeric="20"/>
+            <column name="hours" valueNumeric="10"/>
+            <column name="result_calculation" valueNumeric="5025"/>
+        </insert>
+        <insert tableName="calculations">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="client_id" valueNumeric="2"/>
+            <column name="price_id" valueNumeric="1"/>
+            <column name="creation_date" valueDate="2023-11-23 21:28:12"/>
+            <column name="lic_cost" valueNumeric="30"/>
+            <column name="work_cost" valueNumeric="20"/>
+            <column name="hours" valueNumeric="5"/>
+            <column name="result_calculation" valueNumeric="2535"/>
+        </insert>
+        <insert tableName="calculations">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="price_id" valueNumeric="1"/>
+            <column name="creation_date" valueDate="2023-11-24 21:28:12"/>
+            <column name="lic_cost" valueNumeric="10"/>
+            <column name="work_cost" valueNumeric="20"/>
+            <column name="hours" valueNumeric="15"/>
+            <column name="result_calculation" valueNumeric="7535"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

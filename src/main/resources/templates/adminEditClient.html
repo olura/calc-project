@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit client</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h3>Изменить клиента:</h3>
+<div class="row">
+    <label for="client-owner-input">Владелец:</label>
+    <select id="client-owner-input" name="client" type="text">
+        <option value="">--Выберите владельца--</option>
+    </select>
+</div>
+<div class="row">
+    <label for="client-title-input">Название клиента:</label>
+    <input id="client-title-input" name="title" type="text"/>
+</div>
+<div class="row">
+    <label for="client-comment-input">Примечание:</label>
+    <input id="client-comment-input" name="comment" type="text"/>
+</div>
+
+<div class="row">
+    <button type="button" onclick="saveClient()">Сохранить изменения</button>
+    <a href="adminClient.html" th:href="@{/admin/client}"><button type="button">Назад</button></a>
+</div>
+<h3>Сохранённый клиент:</h3>
+<pre id = "saved-client"></pre>
+
+<script>
+    const path = window.location.pathname;
+    const pathArray = path.split('/');
+    const id = pathArray[pathArray.length - 1];
+    console.log(`id: ${id}`);
+
+    fetch(`/api/client/${id}`, { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("client-owner-input").value = data.owner;
+          document.getElementById("client-title-input").value = data.title;
+          document.getElementById("client-comment-input").value = data.comment;
+        });
+
+    function saveClient() {
+        const savedClientContainer = document.getElementById("saved-client")
+        const ownerInput = document.getElementById("client-owner-input")
+        const titleInput = document.getElementById("client-title-input")
+        const commentInput = document.getElementById("client-comment-input")
+        let  client = {
+            owner: ownerInput.value,
+            title: titleInput.value,
+            comment: commentInput.value,
+        }
+        fetch(`/api/admin/client/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(client)})
+        .then(rawResponse => rawResponse.json())
+        .then(json => savedClientContainer.innerHTML = JSON.stringify(json, null, 4))
+    }
+    // Fetch user from server
+    fetch('/api/user')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('client-owner-input');
+            data.forEach(user => {
+                const option = document.createElement('option');
+                option.text = user.username;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error(error));
+</script>
+</body>
+</html>

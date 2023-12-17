@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin page</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h2>Панель администратора системы</h2>
+<br/>
+<p><a href="price.html" th:href="@{/admin/price}">Прайсы</a></p>
+<p><a href="user.html" th:href="@{/admin/user}">Пользователи</a></p>
+<p><a href="user.html" th:href="@{/admin/client}">Клиенты</a></p>
+<p><a href="adminCalculation.html" th:href="@{/admin/adminCalculation}">Расчёты</a></p>
+<p><a href="main.html" th:href="@{/}">На главную</a></p>
+</body>
+</html>
