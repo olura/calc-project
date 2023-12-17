@@ -67,4 +67,12 @@ public class GlobalExceptionHandler {
         Violation violation = new Violation("id", ex.getMessage());
         return new ValidationErrorResponse(List.of(violation));
     }
+
+    @ExceptionHandler(NotActualPriceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ValidationErrorResponse handleNotActualPriceException(NotActualPriceException ex) {
+        Violation violation = new Violation("id", ex.getMessage());
+        return new ValidationErrorResponse(List.of(violation));
+    }
 }

@@ -1,5 +1,6 @@
 package ru.nau.calcProjects.services;
 
+import ru.nau.calcProjects.exception.NotActualPriceException;
 import ru.nau.calcProjects.exception.PriceNotFoundException;
 import ru.nau.calcProjects.models.Price;
 
@@ -13,7 +14,7 @@ public interface PriceService {
 
     Price findById(Long id) throws PriceNotFoundException;
 
-    Price editPrice(Price price, Long id) throws PriceNotFoundException;
+    Price editPrice(Price price, Long id) throws PriceNotFoundException, NotActualPriceException;
 
     void deleteById(Long id) throws PriceNotFoundException;
 }

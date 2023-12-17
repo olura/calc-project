@@ -99,12 +99,6 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.deleteById(id);
     }
 
-    @Override
-    public Client findByTitle(String title) throws ClientNotFoundException {
-        return clientRepository.findFirstByTitleContaining(title)
-                .orElseThrow(() -> new ClientNotFoundException("Клиент с названием " + title + " не найден"));
-    }
-
     private User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();

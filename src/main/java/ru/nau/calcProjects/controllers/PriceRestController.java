@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.nau.calcProjects.exception.NotActualPriceException;
 import ru.nau.calcProjects.exception.PriceNotFoundException;
 import ru.nau.calcProjects.models.Price;
 import ru.nau.calcProjects.services.PriceService;
@@ -38,7 +39,8 @@ public class PriceRestController {
     }
 
     @PutMapping("/api/price/{id}")
-    public Price editPrice(@PathVariable("id") @Positive long id, @Valid @RequestBody Price price) throws PriceNotFoundException {
+    public Price editPrice(@PathVariable("id") @Positive long id, @Valid @RequestBody Price price)
+            throws PriceNotFoundException, NotActualPriceException {
         return priceService.editPrice(price, id);
     }
 

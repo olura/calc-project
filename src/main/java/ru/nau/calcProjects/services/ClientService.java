@@ -25,6 +25,4 @@ public interface ClientService {
 
     void deleteById(Long id);
 
-    Client findByTitle(String title) throws ClientNotFoundException;
-
 }

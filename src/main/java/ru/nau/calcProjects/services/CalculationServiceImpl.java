@@ -78,30 +78,24 @@ public class CalculationServiceImpl implements CalculationService {
 
     @Override
     public List<Calculation> findAllUserCalculationByUsernameAndClientId(String username, Long clientId) {
-        Long userId;
-
-        if (!username.isEmpty()) {
-            Optional<User> user = userRepository.findFirstByUsernameContaining(username);
-            if (user.isPresent()) {
-                userId = user.get().getId();
-            } else {
-                return List.of();
-            }
-            if (clientId != null) {
-                return calculationRepository
-                        .findTop100ByAuthorIdAndClientId(userId, clientId, Sort.by(Sort.Order.desc("creationDate")));
-            } else {
-                return calculationRepository.findTop100ByAuthorId(userId, Sort.by(Sort.Order.desc("creationDate")));
-            }
-
-        } else {
-            if (clientId != null) {
-                return calculationRepository
-                        .findTop100ByClientId(clientId, Sort.by(Sort.Order.desc("creationDate")));
-            } else {
-                return calculationRepository.findTop100ByOrderByCreationDateDesc();
-            }
+        if (username.isEmpty() && clientId == null) {
+            return calculationRepository.findTop100ByOrderByCreationDateDesc();
         }
+        if (username.isEmpty()) {
+            return calculationRepository
+                    .findTop100ByClientId(clientId, Sort.by(Sort.Order.desc("creationDate")));
+        }
+
+        Optional<User> user = userRepository.findFirstByUsernameContaining(username);
+        if (user.isEmpty()) {
+            return List.of();
+        }
+        Long userId = user.get().getId();
+        if (clientId == null) {
+            return calculationRepository.findTop100ByAuthorId(userId, Sort.by(Sort.Order.desc("creationDate")));
+        }
+        return calculationRepository
+                .findTop100ByAuthorIdAndClientId(userId, clientId, Sort.by(Sort.Order.desc("creationDate")));
     }
 
     @Transactional(readOnly = true)

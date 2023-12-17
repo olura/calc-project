@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.nau.calcProjects.exception.NotActualPriceException;
 import ru.nau.calcProjects.exception.PriceNotFoundException;
 import ru.nau.calcProjects.models.Price;
 import ru.nau.calcProjects.repositories.PriceRepository;
@@ -66,20 +67,20 @@ public class PriceServiceImpl implements PriceService {
 
     @Transactional
     @Override
-    public Price editPrice(Price price, Long id) throws PriceNotFoundException {
+    public Price editPrice(Price price, Long id) throws PriceNotFoundException, NotActualPriceException {
         Price editPrice = findById(id);
         editPrice.setTitle(price.getTitle());
         editPrice.setLicPercent(price.getLicPercent());
         editPrice.setWorkPercent(price.getWorkPercent());
-        editPrice.setStatus(price.isStatus());
 
-        if (editPrice.isStatus()) {
+        if (price.isStatus()) {
             setNewActualPrice(editPrice);
         } else {
             Price actualPrice = priceRepository.findByStatus(true);
             if (id.equals(actualPrice.getId())) {
-                throw new RuntimeException("Невозможно сменить статус данного прайса: должен быть хотя бы один актуальный прайс");
+                throw new NotActualPriceException("Невозможно сменить статус данного прайса");
             }
+            editPrice.setStatus(price.isStatus());
         }
         return priceRepository.save(editPrice);
     }

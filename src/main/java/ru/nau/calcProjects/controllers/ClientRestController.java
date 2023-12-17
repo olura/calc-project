@@ -39,11 +39,6 @@ public class ClientRestController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/api/client/findByTitle")
-    public ClientDto getClientByTitle(@RequestParam(value = "title") String title) throws ClientNotFoundException {
-        return new ClientDto(clientService.findByTitle(title));
-    }
-
     @GetMapping ("/api/client/{id}")
     public ClientDto getClient(@PathVariable @Positive long id) throws ClientNotFoundException {
         return new ClientDto(clientService.findById(id));
